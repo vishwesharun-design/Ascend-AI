@@ -40,7 +40,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, isDarkMode, user
             // For magic link flow, check device before sending link
             const deviceFingerprint = getOrCreateDeviceFingerprint();
             try {
-                const spamCheckRes = await fetch('http://localhost:3301/api/check-spam', {
+                const spamCheckRes = await fetch('/api/check-spam', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ deviceFingerprint })
