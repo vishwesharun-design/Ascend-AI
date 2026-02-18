@@ -83,6 +83,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, isDarkMode, user
         }
     };
 
+    
     const handleGoogleSignIn = async () => {
         setLoading(true);
         setMessage(null);
