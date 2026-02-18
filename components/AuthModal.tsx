@@ -153,8 +153,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, isDarkMode, user
                         {/* Password removed: magic-link email-only flow */}
 
                         {message && (
-                            <div className={`p-4 rounded-xl text-xs font-bold flex items-start gap-3 ${message.includes('Check') ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
-                                <i className={`fas ${message.includes('Check') ? 'fa-check-circle' : 'fa-exclamation-circle'} text-sm mt-0.5 shrink-0`}></i>
+                            <div className={`p-4 rounded-xl text-xs font-bold flex items-start gap-3 ${message.includes('📧') ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                                <i className={`fas ${message.includes('📧') ? 'fa-check-circle' : 'fa-exclamation-circle'} text-sm mt-0.5 shrink-0`}></i>
                                 <span>{message}</span>
                             </div>
                         )}
