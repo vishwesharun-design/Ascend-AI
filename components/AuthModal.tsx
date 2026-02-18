@@ -90,7 +90,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, isDarkMode, user
         setMessage(null);
         const deviceFingerprint = getOrCreateDeviceFingerprint();
         try {
-            const spamCheckRes = await fetch('//api/check-spam', {
+            const spamCheckRes = await fetch('/api/check-spam', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ deviceFingerprint })
@@ -125,7 +125,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, isDarkMode, user
             <div className={`relative w-full max-w-md rounded-3xl shadow-2xl animate-in fade-in zoom-in-95 duration-300 overflow-hidden ${isDarkMode ? 'bg-gradient-to-br from-slate-900 via-[#0f172a] to-black border border-white/10' : 'bg-white text-slate-900'}`}>
                 {/* Header with gold accent */}
                 <div className="absolute top-0 left-0 right-0 h-1 gold-gradient"></div>
-                
+
                 <div className="p-8 space-y-6">
                     <div className="flex items-center justify-between">
                         <div>
@@ -181,16 +181,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, isDarkMode, user
                     {/* Divider */}
                     <div className={`h-px ${isDarkMode ? 'bg-white/5' : 'bg-slate-200'}`}></div>
 
-                                        <div className="pt-4">
-                                            <button onClick={handleGoogleSignIn} disabled={loading} className="w-full py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800 text-sm font-bold flex items-center justify-center gap-3">
-                                                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" />
-                                                <span>Continue with Google</span>
-                                            </button>
-                                        </div>
+                    <div className="pt-4">
+                        <button onClick={handleGoogleSignIn} disabled={loading} className="w-full py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800 text-sm font-bold flex items-center justify-center gap-3">
+                            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" />
+                            <span>Continue with Google</span>
+                        </button>
+                    </div>
 
-                                        <div className={`text-center space-y-2 ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
-                                                <p className="text-[10px] uppercase tracking-widest font-bold opacity-60">Enter your email and we'll send a confirmation link — open it to sign in.</p>
-                                        </div>
+                    <div className={`text-center space-y-2 ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                        <p className="text-[10px] uppercase tracking-widest font-bold opacity-60">Enter your email and we'll send a confirmation link — open it to sign in.</p>
+                    </div>
                 </div>
             </div>
         </div>

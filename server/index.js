@@ -44,7 +44,7 @@ async function checkDeviceSpam(deviceFingerprint) {
     console.warn('⚠️ Supabase not initialized - cannot check device spam. Add SUPABASE_SERVICE_ROLE_KEY to server/.env');
     return { isBlocked: false, reason: null };
   }
-  
+
   try {
     const { data, error } = await supabase
       .from('device_fingerprints')
@@ -111,11 +111,11 @@ async function registerDevice(deviceFingerprint, userId) {
         console.log(`✅ Device already registered for this user`);
         return;
       }
-      
+
       // Different user on same device - increment count
       const newCount = existing.account_count + 1;
       console.warn(`⚠️ MULTI-ACCOUNT ALERT: New user on device with ${newCount} total accounts`);
-      
+
       const { error: updateError } = await supabase
         .from('device_fingerprints')
         .update({
@@ -136,16 +136,16 @@ async function registerDevice(deviceFingerprint, userId) {
         .insert({
           device_fingerprint: deviceFingerprint,
           action: 'new_account_same_device',
-          details: { 
-            newUser: userId, 
-            previousUser: existing.user_id, 
+          details: {
+            newUser: userId,
+            previousUser: existing.user_id,
             previousCount: existing.account_count,
             totalAccounts: newCount
           }
         });
 
       if (logError) console.error('Error logging spam activity:', logError.message);
-      
+
       if (newCount >= 3) {
         console.warn(`❌ AUTO-BLOCKED: Device exceeded 3 account limit (${newCount} found)`);
       }
@@ -206,7 +206,7 @@ async function incrementUserUsage(userId) {
 
   try {
     const today = new Date().toISOString().split('T')[0];
-    
+
     // Try to increment existing record
     const { data: updated, error: updateError } = await supabase
       .from('user_daily_usage')
@@ -305,7 +305,7 @@ app.post('/api/check-spam', async (req, res) => {
     }
 
     const result = await checkDeviceSpam(deviceFingerprint);
-    
+
     return res.json(result);
   } catch (error) {
     console.error('Spam check error:', error);
@@ -325,7 +325,7 @@ app.post('/api/register-device', async (req, res) => {
     }
 
     await registerDevice(deviceFingerprint, userId);
-    
+
     return res.json({ success: true, message: 'Device registered' });
   } catch (error) {
     console.error('Device registration endpoint error:', error);
@@ -345,7 +345,7 @@ app.post('/api/get-daily-usage', async (req, res) => {
     }
 
     const usageCount = await getUserDailyUsage(userId);
-    
+
     return res.json({ usageCount, limitReached: usageCount >= 3 });
   } catch (error) {
     console.error('Daily usage check error:', error);
@@ -365,7 +365,7 @@ app.post('/api/increment-usage', async (req, res) => {
     }
 
     const newCount = await incrementUserUsage(userId);
-    
+
     return res.json({ usageCount: newCount, limitReached: newCount >= 3 });
   } catch (error) {
     console.error('Usage increment error:', error);
@@ -395,7 +395,7 @@ async function runAutoMigrationIfNeeded() {
   } catch (err) {
     console.error('Migration error (auto-migrate):', err.message || err);
   } finally {
-    try { await client.end(); } catch (e) {}
+    try { await client.end(); } catch (e) { }
   }
 }
 
@@ -410,11 +410,11 @@ if (!GEMINI_API_KEYS.length) {
 function generateLocalBlueprint(goal, mode) {
   const title = `Strategic Blueprint: ${goal}`;
   const vision = `"A focused vision to achieve ${goal} with measurable milestones."`;
-  
+
   let pillars = [];
   let phases = [];
   let market = [];
-  
+
   // MODE-SPECIFIC CONTENT
   switch (mode) {
     case "Detailed":
@@ -430,7 +430,7 @@ function generateLocalBlueprint(goal, mode) {
       ];
       market = [{ title: "Market Analysis", description: `Detailed market intelligence and deep opportunity analysis for ${goal}.`, sourceUrl: "" }];
       break;
-      
+
     case "Rapid":
       pillars = [
         "Quick Wins & Early Revenue",
@@ -444,7 +444,7 @@ function generateLocalBlueprint(goal, mode) {
       ];
       market = [{ title: "Market Opportunity", description: `First-mover advantage in ${goal} market segment.`, sourceUrl: "" }];
       break;
-      
+
     case "Market Intel":
       pillars = [
         "Competitor Benchmarking",
@@ -461,7 +461,7 @@ function generateLocalBlueprint(goal, mode) {
         { title: "Competitive Advantage", description: `Unique positioning strategy for ${goal}.`, sourceUrl: "" }
       ];
       break;
-      
+
     default: // Standard
       pillars = [
         "Execution Discipline",
@@ -589,52 +589,52 @@ Insight 3
 Make it visually structured and professional.
 `;
 
-      let blueprintText = null;
+    let blueprintText = null;
 
-      // If Gemini keys are configured, try calling the API; otherwise use local fallback.
-      if (GEMINI_API_KEYS.length > 0) {
-        // Try each API key with fallback
-        for (const apiKey of GEMINI_API_KEYS) {
-          try {
-            const geminiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=' + apiKey;
-            const geminiResponse = await fetch(geminiUrl, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    parts: [{ text: prompt }]
-                  }
-                ]
-              })
-            });
+    // If Gemini keys are configured, try calling the API; otherwise use local fallback.
+    if (GEMINI_API_KEYS.length > 0) {
+      // Try each API key with fallback
+      for (const apiKey of GEMINI_API_KEYS) {
+        try {
+          const geminiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=' + apiKey;
+          const geminiResponse = await fetch(geminiUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [{ text: prompt }]
+                }
+              ]
+            })
+          });
 
-            if (!geminiResponse.ok) {
-              const data = await geminiResponse.json().catch(() => null);
-              console.error("Gemini API Error:", data);
-              // Continue to next API key if available
-              continue;
-            } else {
-              const data = await geminiResponse.json().catch(() => null);
-              blueprintText = data?.candidates?.[0]?.content?.parts?.[0]?.text || null;
-              if (blueprintText) {
-                console.log('✅ Blueprint generated successfully');
-                break; // Success, stop trying other keys
-              }
+          if (!geminiResponse.ok) {
+            const data = await geminiResponse.json().catch(() => null);
+            console.error("Gemini API Error:", data);
+            // Continue to next API key if available
+            continue;
+          } else {
+            const data = await geminiResponse.json().catch(() => null);
+            blueprintText = data?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+            if (blueprintText) {
+              console.log('✅ Blueprint generated successfully');
+              break; // Success, stop trying other keys
             }
-          } catch (e) {
-            console.error('Gemini fetch failed:', e.message || e);
-            // Continue to next API key
           }
+        } catch (e) {
+          console.error('Gemini fetch failed:', e.message || e);
+          // Continue to next API key
         }
       }
+    }
 
-      // Local fallback generator if Gemini failed or is not configured
-      if (!blueprintText) {
-        blueprintText = generateLocalBlueprint(goal, mode);
-      }
+    // Local fallback generator if Gemini failed or is not configured
+    if (!blueprintText) {
+      blueprintText = generateLocalBlueprint(goal, mode);
+    }
 
     // Clean up markdown formatting
     blueprintText = blueprintText
@@ -695,7 +695,7 @@ Make it visually structured and professional.
             currentPhase.description = currentPhaseDescription.trim();
             strategyRoadmap.push(currentPhase);
           }
-          
+
           const phaseMatch = line.match(/Phase\s+\d+[:\s]*(.+)/i);
           if (phaseMatch) {
             currentPhase = {
@@ -935,10 +935,10 @@ app.delete('/api/blueprint/:id', async (req, res) => {
 
     // Get the blueprint to verify ownership
     const { data: blueprints } = await supabase
-  .from('blueprints')
-  .select('*')
-  .eq('user_id', userId)
-  .order('created_at', { ascending: false });
+      .from('blueprints')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
 
 
     if (fetchError || !blueprint) {
@@ -965,13 +965,14 @@ app.delete('/api/blueprint/:id', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Using ${GEMINI_API_KEYS.length} API key(s) for Gemini`);
-});
 // Serve frontend build
 app.use(express.static(path.join(__dirname, "../dist")));
 
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, "../dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../dist", "index.html"));
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📊 Using ${GEMINI_API_KEYS.length} API key(s) for Gemini`);
 });
