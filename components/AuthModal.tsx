@@ -88,7 +88,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, isDarkMode, user
         setMessage(null);
         const deviceFingerprint = getOrCreateDeviceFingerprint();
         try {
-            const spamCheckRes = await fetch('http://localhost:3301/api/check-spam', {
+            const spamCheckRes = await fetch('http://api/check-spam', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ deviceFingerprint })
